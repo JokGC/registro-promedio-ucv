@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Promedios – Ing. Informática</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--tx:#1a2140;--mut:#6b7390;--pri:#1f3a8a;--ok:#16794a;--bad:#b42318;--warn:#a15c07;--bd:#dde2ef;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1426;--card:#18203a;--tx:#e8ecf8;--mut:#9aa3c4;--pri:#7fa0ff;--ok:#4cc38a;--bad:#ff8a80;--warn:#f0b35a;--bd:#2a3354}}
+:root[data-theme="dark"]{--bg:#0f1426;--card:#18203a;--tx:#e8ecf8;--mut:#9aa3c4;--pri:#7fa0ff;--ok:#4cc38a;--bad:#ff8a80;--warn:#f0b35a;--bd:#2a3354}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:720px;margin:0 auto;padding:14px}
+h1{font-size:19px;margin:0}h2{font-size:15px;margin:18px 0 8px;color:var(--pri)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
+button,input,select{font:inherit;color:var(--tx)}
+button{background:var(--pri);color:var(--bg);border:0;border-radius:8px;padding:9px 14px;cursor:pointer}
+button.g{background:transparent;color:var(--pri);border:1px solid var(--bd)}
+input,select{background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:9px;width:100%}
+.row{display:flex;gap:8px;align-items:center}.sp{justify-content:space-between}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
+.tabs button{background:var(--card);color:var(--tx);border:1px solid var(--bd);white-space:nowrap}
+.tabs button.on{background:var(--pri);color:var(--bg)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat b{display:block;font-size:24px;color:var(--pri)}.stat span{color:var(--mut);font-size:12px}
+.c{border-top:1px solid var(--bd);padding:10px 0}.c:first-of-type{border-top:0}
+.c .n{font-weight:600}.c .h{color:var(--mut);font-size:12px}
+.at{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.at label{font-size:11px;color:var(--mut)}.at input{padding:7px;text-align:center}.at input:disabled{opacity:.4}
+.st{font-size:12px;margin-top:4px}.ok{color:var(--ok)}.bad{color:var(--bad)}.wa{color:var(--warn)}.mu{color:var(--mut)}
+textarea{width:100%;height:90px;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;font:11px monospace}
+.small{font-size:12px;color:var(--mut)}
+</style>
+</head>
+<body><div class="w" id="app"></div>
+<script>
+const PLAN_INF=[
+[["Misterio Cristiano I",2],["Geometría Analítica",6],["Matemática 1",6],["Trigonometría",5],["Introducción a la Ingeniería",3],["Comunicación",3]],
+[["Misterio Cristiano II",2],["Álgebra Vectorial",4],["Matemática 2",6],["Introducción a la Física",6],["Introducción a la Informática",4],["Algoritmia",5]],
+[["Antropología Cristiana",2],["Álgebra Lineal",4],["Matemática 3",6],["Física I",6],["Teoría y Apli. de la Informática",4],["Metodología de la Investigación",3]],
+[["Ética Fundamental",2],["Ecuaciones Diferenciales",6],["Matemática 4",4],["Física II",8],["Lenguajes de Programación I",8]],
+[["Ética Personal",2],["Estadística I",3],["Matemática para Informáticos",4],["Física III",6],["Lenguajes de Programación II",8],["Historia y Fil. de las Ciencias",2]],
+[["Ética Social I",2],["Estadística II",4],["Arquitectura de Sistemas",6],["Sistemas Operativos I",5],["Lenguajes de Programación III",5],["Ingeniería Legal",3]],
+[["Ética Social II",2],["Investigación de Operaciones",6],["Redes de Computadoras 1",5],["Sistemas Operativos II",4],["Base de Datos",7],["Seguridad Laboral",4]],
+[["Ética Profesional",2],["Informática I",8],["Redes de Computadoras II",5],["Ingeniería de Software I",5],["Cálculo Numérico",5],["Administración",3]],
+[["Informática II",8],["Compiladores",6],["Ingeniería de Software II",5],["Práctica Profesional I",5],["Proyecto I",4],["Contabilidad",2]],
+[["Complementos de Informática",6],["Informática III",6],["Sistemas Paralelos y Distribuidos",4],["Práctica Profesional II",5],["Proyecto II",5],["Economía Industrial",4]]];
+const PLAN_IND=[
+[["Misterio Cristiano I",2],["Geometría Analítica",6],["Matemática 1",6],["Trigonometría",5],["Dibujo Técnico I",3],["Introducción a la Ingeniería",3],["Comunicación",3]],
+[["Misterio Cristiano II",2],["Álgebra Vectorial",4],["Matemática 2",6],["Introducción a la Física",6],["Dibujo Técnico II",4],["Informática I",4],["Química General",6]],
+[["Antropología Cristiana",2],["Álgebra Lineal",4],["Matemática 3",6],["Física I",6],["Representación Gráfica I",5],["Informática II",4]],
+[["Ética Fundamental",2],["Ecuaciones Diferenciales",6],["Matemática 4",4],["Física II",8],["Mecánica Racional I",4],["Representación Gráfica II",5],["Materiales para Ingeniería",6]],
+[["Ética Personal",2],["Física III",6],["Mecánica Racional II",4],["Instalaciones Industriales I",6],["Filosofía de la Ciencia",2],["Proceso de Manufactura",6]],
+[["Ética Social I",2],["Transferencia I",6],["Termodinámica Aplicada",5],["Resistencia de Materiales I",6],["Ingeniería Legal",3],["Estadística Civil e Industrial",5]],
+[["Ética Social II",2],["Transferencia II",5],["Mecánica de Fluidos",4],["Resistencia de Materiales II",6],["Producción Limpia I",4],["Seguridad Laboral",4],["Investigación de Operaciones",6]],
+[["Ética Profesional",2],["Administración",3],["Logística Industrial",4],["Diseño Mecánico",6],["Producción Limpia II",4],["Mantenimiento Industrial",4],["Ingeniería de Métodos y Plantas",4],["Automatización",4]],
+[["Contabilidad",2],["Proyecto I",6],["Mercadotecnia",4],["Instalaciones Industriales II",5],["Instrumento de Gestión Ambiental",5],["Producción I",4],["Práctica Profesional I",5]],
+[["Economía Industrial",4],["Comportamiento Organizacional",4],["Planificación y Gestión Estratégica",4],["Práctica Profesional II",5],["Proyecto II",6],["Producción II",4],["Gestión de la Calidad",4]]];
+const PLAN_QUI=[
+[["Misterio Cristiano I",2],["Matemática 1",6],["Geometría Analítica",6],["Introducción a la Ingeniería",3],["Sociología",3],["Comunicación",3]],
+[["Misterio Cristiano II",2],["Matemática 2",6],["Introducción a la Física",6],["Química Inorgánica",6],["Sistemas de Representación C",3]],
+[["Antropología Cristiana",2],["Matemática 3",6],["Física I",6],["Probabilidades",5],["Química Orgánica I",6],["Metodología de la Investigación",3]],
+[["Ética Fundamental",2],["Matemática 4",4],["Física II",8],["Química Analítica Instrumental",8],["Química Orgánica II",6],["Estadística",6]],
+[["Ética Personal",2],["Físico Química I",6],["Termodinámica de Ing. Química I",6],["Transferencia de Cantidad de Movimiento",6],["Física III",6],["Simulación de Procesos I",6]],
+[["Ética Social I",2],["Físico Química II",7],["Termodinámica de Ing. Química II",8],["Transferencia de Energía y Materia",6],["Simulación de Procesos II",8],["Ingeniería Legal",3]],
+[["Ética Social II",2],["Electroquímica",5],["Ing. de las Reacciones Químicas I",6],["Tecnología del Calor",8],["Ing. de las Operaciones Físicas I",6],["Fundamentos de Ing. Ambiental",3],["Seguridad Ambiental",4]],
+[["Ética Profesional",2],["Ingeniería Bioquímica",5],["Ing. de las Reacciones Químicas II",6],["Materiales y Equipos para Procesos Químicos",6],["Ing. de las Operaciones Físicas II",6],["Laboratorio de Ing. Química I",4],["Administración",3]],
+[["Contabilidad",4],["Diseño Óptimo I",6],["Industrias Químicas",5],["Control de Procesos I",5],["Laboratorio de Ing. Química II",4],["Proyecto I",6]],
+[["Diseño Óptimo II",6],["Seguridad e Higiene en el Trabajo",4],["Control de Procesos II",5],["Gestión de Calidad",4],["Práctica Profesional",5],["Proyecto II",6]]];
+const CARR={inf:{n:"Ingeniería Informática",p:PLAN_INF},ind:{n:"Ingeniería Industrial",p:PLAN_IND},qui:{n:"Ingeniería Química",p:PLAN_QUI}};
+let PLAN=PLAN_INF;
+const KEY="ucaInfo_v1";
+let mem={users:{},cur:null,cfg:{pass:2,max:5,w:false}};
+function load(){try{const r=localStorage.getItem(KEY);if(r)mem=Object.assign(mem,JSON.parse(r))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(mem))}catch(e){}}
+async function hash(s){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("uca:"+s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return btoa(s)}}
+let year=1,msg="";
+const $=h=>{const d=document.createElement("div");d.innerHTML=h;return d};
+const app=document.getElementById("app");
+const user=()=>mem.users[mem.cur];
+function ask(t,y){const o=document.createElement("div");o.style.cssText="position:fixed;inset:0;background:#0009;display:flex;align-items:center;justify-content:center;padding:20px;z-index:9";o.innerHTML=`<div class="card" style="max-width:340px;margin:0"><p>${t}</p><div class="row">${y?'<button class="g" id="no" style="flex:1">Cancelar</button>':""}<button id="si" style="flex:1">${y?"Sí, estoy seguro":"OK"}</button></div></div>`;document.body.append(o);const nb=o.querySelector("#no");if(nb)nb.onclick=()=>o.remove();o.querySelector("#si").onclick=()=>{o.remove();y&&y()}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function final(id){const g=(user().g[id]||[]).filter(x=>x!==null&&x!=="");const l=g[g.length-1];return g.length&&l!=="A"?+l:null}
+function avg(ids){let s=0,w=0;ids.forEach(([id,h])=>{const f=final(id);if(f!==null&&f>=mem.cfg.pass){const k=mem.cfg.w?h:1;s+=f*k;w+=k}});return w?(s/w):null}
+const fmt=v=>v===null?"–":v.toFixed(2);
+function ids(sems){const o=[];sems.forEach(s=>PLAN[s].forEach((c,i)=>o.push([s+"-"+i,c[1]])));return o}
+
+function loginView(){
+ const names=Object.keys(mem.users);
+ app.innerHTML="";
+ app.append($(`<h1>Promedios · Campus Guairá</h1><p class="small">Perfiles guardados en este dispositivo/navegador.</p>
+ ${names.length?`<div class="card"><b>Ingresar</b><select id="u" style="margin:8px 0">${names.map(n=>`<option>${esc(n)}</option>`).join("")}</select>
+ <input id="p" type="password" inputmode="numeric" placeholder="PIN (si tiene)" style="margin-bottom:8px"><button id="in" style="width:100%">Entrar</button></div>`:""}
+ <div class="card"><b>Crear perfil</b><input id="nn" placeholder="Nombre" style="margin:8px 0"><select id="nc" style="margin-bottom:8px"><option value="">Elige tu carrera…</option>${Object.entries(CARR).map(([k,v])=>`<option value="${k}">${v.n}</option>`).join("")}</select><input id="np" type="password" inputmode="numeric" placeholder="PIN opcional" style="margin-bottom:8px"><button id="cr" style="width:100%">Crear</button></div>
+ <div class="mu small" id="m">${esc(msg)}</div>
+ <div class="card small">⚠️ Este acceso no es seguridad real: no hay servidor. Sirve para separar perfiles en un mismo dispositivo. Para pasar tus datos a otro dispositivo usa Exportar/Importar dentro de la app.</div>`));
+ const i=document.getElementById("in");
+ if(i)i.onclick=async()=>{const n=document.getElementById("u").value,p=await hash(document.getElementById("p").value);
+  if(mem.users[n].pin&&mem.users[n].pin!==await hash("")&&mem.users[n].pin!==p){msg="PIN incorrecto";return loginView()}
+  mem.cur=n;msg="";save();main()};
+ document.getElementById("cr").onclick=async()=>{const n=document.getElementById("nn").value.trim();
+  if(!n||mem.users[n]){msg=n?"Ese perfil ya existe":"Escribe un nombre";return loginView()}
+  const c=document.getElementById("nc").value;if(!c){msg="Elige tu carrera";return loginView()}
+  const pv=document.getElementById("np").value;
+  ask("Tu carrera será <b>"+CARR[c].n+"</b> y no podrá cambiarse después en este perfil. ¿Estás seguro?",async()=>{mem.users[n]={pin:await hash(pv),c,g:{}};mem.cur=n;msg="";save();main()})};
+}
+
+function main(){
+ if(!mem.cur||!user())return loginView();
+ PLAN=CARR[user().c||"inf"].p;
+ const y=year,sems=[2*y-2,2*y-1],all=[...Array(10).keys()];
+ const cfg=mem.cfg;
+ app.innerHTML="";
+ let h=`<div class="row sp"><div><h1>Hola, ${esc(mem.cur)}</h1><div class="small">${CARR[user().c||"inf"].n}</div></div><button class="g" id="out">Salir</button></div>
+ <div class="card stats" style="margin-top:12px">
+  <div class="stat"><b>${fmt(avg(ids(sems)))}</b><span>Promedio año ${y}</span></div>
+  <div class="stat"><b>${fmt(avg(ids(all)))}</b><span>Promedio general</span></div>
+  <div class="stat"><b>${fmt(avg(ids([sems[0]])))}</b><span>Semestre ${sems[0]+1}</span></div>
+  <div class="stat"><b>${fmt(avg(ids([sems[1]])))}</b><span>Semestre ${sems[1]+1}</span></div></div>
+ <div class="tabs">${[1,2,3,4,5].map(n=>`<button data-y="${n}" class="${n==y?"on":""}">Año ${n}</button>`).join("")}</div>`;
+ sems.forEach(s=>{
+  h+=`<h2>${s%2?"2º":"1º"} semestre (${s+1}º)</h2><div class="card">`;
+  PLAN[s].forEach((c,i)=>{
+   const id=s+"-"+i,g=user().g[id]||[],f=final(id);
+   let st=`<span class="mu">Sin calificación</span>`;
+   const n=g.filter(x=>x!==null&&x!=="").length;if(n){
+    st=f!==null&&f>=cfg.pass?`<span class="ok">✔ Aprobada en ${n}ª oportunidad · nota ${f}</span>`:n>=3?`<span class="bad">✘ Sin aprobar (3 oportunidades) · debe recursar</span>`:`<span class="wa">Sin aprobar · puede rendir la ${n+1}ª oportunidad</span>`}
+   h+=`<div class="c"><div class="n">${esc(c[0])}</div><div class="h">${c[1]} horas reloj</div><div class="at">${[0,1,2].map(k=>{
+     const prevOk=k==0||(g[k-1]!==undefined&&g[k-1]!==null&&g[k-1]!==""&&(g[k-1]==="A"||+g[k-1]<cfg.pass));
+     return`<div><label>${k+1}ª oport.</label><input type="number" inputmode="decimal" min="1" max="${cfg.max}" step="any" data-id="${id}" data-k="${k}" value="${g[k]==="A"?"":g[k]??""}" placeholder="${g[k]==="A"?"Ausente":""}" ${prevOk&&g[k]!=="A"?"":"disabled"}><button class="g" style="width:100%;padding:4px;font-size:11px;margin-top:4px" data-id="${id}" data-k="${k}" ${prevOk?"":"disabled"}>${g[k]==="A"?"Quitar":"Ausente"}</button></div>`}).join("")}</div><div class="st">${st}</div></div>`});
+  h+=`</div>`});
+ h+=`<h2>Ajustes</h2><div class="card"><div class="row"><div><label class="small">Nota mínima de aprobación</label><input id="cp" type="number" step="any" value="${cfg.pass}"></div><div><label class="small">Nota máxima</label><input id="cm" type="number" step="any" value="${cfg.max}"></div></div>
+ <label class="row small" style="margin-top:10px"><input type="checkbox" id="cw" style="width:auto" ${cfg.w?"checked":""}> Ponderar promedio por horas reloj</label>
+ <p class="small">Ausente usa la oportunidad pero no afecta el promedio. Se promedian solo las materias aprobadas (nota de la oportunidad en que aprobó). Verifica la escala y mínimo de tu universidad.</p></div>
+ <h2>Respaldo</h2><div class="card"><textarea id="bk" placeholder="Pega aquí un respaldo para importar"></textarea>
+ <div class="row" style="margin-top:8px"><button class="g" id="ex">Exportar</button><button class="g" id="im">Importar</button></div></div>`;
+ app.append($(h));
+ document.getElementById("out").onclick=()=>{mem.cur=null;save();loginView()};
+ app.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{year=+b.dataset.y;main()});
+ app.querySelectorAll(".at input").forEach(inp=>inp.onchange=()=>{
+  const id=inp.dataset.id,k=+inp.dataset.k;let v=inp.value===""?null:Math.min(cfg.max,Math.max(1,+inp.value));
+  const g=(user().g[id]||[]).slice();g[k]=v;
+  if(v===null||v>=cfg.pass)g.length=k+1;
+  while(g.length&&(g[g.length-1]===null||g[g.length-1]===undefined))g.pop();
+  user().g[id]=g;save();const sy=scrollY;main();scrollTo(0,sy)});
+ app.querySelectorAll(".at button").forEach(b=>b.onclick=()=>{const id=b.dataset.id,k=+b.dataset.k,g=(user().g[id]||[]).slice();if(g[k]==="A"){g.length=k}else{g[k]="A";g.length=k+1}user().g[id]=g;save();const sy=scrollY;main();scrollTo(0,sy)});
+ const sv=()=>{cfg.pass=+document.getElementById("cp").value||2;cfg.max=+document.getElementById("cm").value||5;cfg.w=document.getElementById("cw").checked;save();const sy=scrollY;main();scrollTo(0,sy)};
+ ["cp","cm","cw"].forEach(i=>document.getElementById(i).onchange=sv);
+ document.getElementById("ex").onclick=()=>{const t=document.getElementById("bk");t.value=JSON.stringify({n:mem.cur,c:user().c||"inf",g:user().g});t.select();try{document.execCommand("copy")}catch(e){}};
+ document.getElementById("im").onclick=()=>{try{const d=JSON.parse(document.getElementById("bk").value);if(d.c&&d.c!==(user().c||"inf")){ask("El respaldo es de otra carrera");return}if(d.g)ask("Esto reemplaza tus notas actuales. ¿Continuar?",()=>{user().g=d.g;save();main()})}catch(e){ask("Respaldo inválido")}};
+}
+load();mem.cur&&user()?main():loginView();
+</script>
+</body></html>
